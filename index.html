@@ -11,33 +11,6 @@
       background-color: #f0f0f0;
     }
 
-    #addWordSection {
-      margin-bottom: 2rem;
-      padding: 1rem;
-      background: #fff;
-      border: 1px solid #ccc;
-      display: inline-block;
-      text-align: left;
-    }
-
-    #addWordSection input {
-      padding: 0.4rem;
-      margin-right: 0.5rem;
-      margin-bottom: 0.5rem;
-      font-size: 1rem;
-    }
-
-    #addWordSection button {
-      padding: 0.4rem 0.8rem;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    #addStatus {
-      margin-top: 0.5rem;
-      color: green;
-    }
-
     #hint {
       font-size: 1.2rem;
       margin-bottom: 1rem;
@@ -87,14 +60,6 @@
 
   <h1>Jogo da Forca com Dicas</h1>
 
-  <div id="addWordSection">
-    <h2>Adicionar Nova Pergunta</h2>
-    <input type="text" id="newWord" placeholder="Palavra (A–Z apenas)" maxlength="20">
-    <input type="text" id="newHint" placeholder="Dica para a palavra">
-    <button id="addWordBtn">Adicionar Palavra</button>
-    <div id="addStatus"></div>
-  </div>
-
   <div id="hint"></div>
   <canvas id="hangmanCanvas" width="200" height="250"></canvas>
 
@@ -105,18 +70,18 @@
   <button id="restartBtn">Jogar Novamente</button>
 
   <script>
-    // Lista inicial de palavras com dicas
+    // Lista de palavras e dicas (não envolvem programação)
     let words = [
-      { word: 'JAVASCRIPT', hint: 'Linguagem de programação para web' },
-      { word: 'HTML',       hint: 'Linguagem de marcação de páginas' },
-      { word: 'CSS',        hint: 'Linguagem de estilo para páginas' },
-      { word: 'PROGRAMACAO',hint: 'Ato de escrever código para resolver problemas' },
-      { word: 'DESAFIO',    hint: 'Algo que testa suas habilidades' },
-      { word: 'ELEFANTE',   hint: 'Grande mamífero com tromba' },
-      { word: 'PYTHON',     hint: 'Linguagem de programação conhecida por sua simplicidade' },
-      { word: 'CACHORRO',   hint: 'Animal de estimação muito comum' },
-      { word: 'LIVRO',      hint: 'Objeto usado para ler e aprender' },
-      { word: 'SOL',        hint: 'Estrela que ilumina o nosso sistema solar' }
+      { word: 'ELEFANTE', hint: 'Grande mamífero com tromba' },
+      { word: 'CACHORRO', hint: 'Animal de estimação muito comum' },
+      { word: 'LIVRO',    hint: 'Objeto usado para ler e aprender' },
+      { word: 'MONTANHA', hint: 'Uma grande elevação natural da superfície' },
+      { word: 'MORANGO',  hint: 'Fruta vermelha e doce' },
+      { word: 'RELOJIO',  hint: 'Instrumento usado para medir o tempo' },
+      { word: 'PÁSSARO',  hint: 'Animal com asas e penas' },
+      { word: 'AEROPORTO',hint: 'Lugar onde aviões decolam e pousam' },
+      { word: 'CINEMA',   hint: 'Lugar onde assistimos a filmes' },
+      { word: 'CARRO',    hint: 'Veículo motorizado de quatro rodas' }
     ];
 
     let chosenWord, chosenHint, guessedLetters, wrongAttempts;
@@ -126,7 +91,6 @@
 
     // Inicializa ou reinicia o jogo
     function init() {
-      // Escolhe uma palavra aleatória da lista
       const idx = Math.floor(Math.random() * words.length);
       chosenWord     = words[idx].word;
       chosenHint     = words[idx].hint;
@@ -236,7 +200,3 @@
     function endGame() {
       document.querySelectorAll('#letters button')
         .forEach(b => b.disabled = true);
-      restartBtn.style.display = 'inline-block';
-    }
-
-    restart
