@@ -11,6 +11,33 @@
       background-color: #f0f0f0;
     }
 
+    #addWordSection {
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: #fff;
+      border: 1px solid #ccc;
+      display: inline-block;
+      text-align: left;
+    }
+
+    #addWordSection input {
+      padding: 0.4rem;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    #addWordSection button {
+      padding: 0.4rem 0.8rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    #addStatus {
+      margin-top: 0.5rem;
+      color: green;
+    }
+
     #hint {
       font-size: 1.2rem;
       margin-bottom: 1rem;
@@ -60,6 +87,14 @@
 
   <h1>Jogo da Forca com Dicas</h1>
 
+  <div id="addWordSection">
+    <h2>Adicionar Nova Pergunta</h2>
+    <input type="text" id="newWord" placeholder="Palavra (A–Z apenas)" maxlength="20">
+    <input type="text" id="newHint" placeholder="Dica para a palavra">
+    <button id="addWordBtn">Adicionar Palavra</button>
+    <div id="addStatus"></div>
+  </div>
+
   <div id="hint"></div>
   <canvas id="hangmanCanvas" width="200" height="250"></canvas>
 
@@ -70,18 +105,13 @@
   <button id="restartBtn">Jogar Novamente</button>
 
   <script>
-    // Lista de palavras e dicas (não envolvem programação)
+    // Lista inicial de palavras com dicas
     let words = [
-      { word: 'ELEFANTE', hint: 'Grande mamífero com tromba' },
-      { word: 'CACHORRO', hint: 'Animal de estimação muito comum' },
-      { word: 'LIVRO',    hint: 'Objeto usado para ler e aprender' },
-      { word: 'MONTANHA', hint: 'Uma grande elevação natural da superfície' },
-      { word: 'MORANGO',  hint: 'Fruta vermelha e doce' },
-      { word: 'RELOJIO',  hint: 'Instrumento usado para medir o tempo' },
-      { word: 'PÁSSARO',  hint: 'Animal com asas e penas' },
-      { word: 'AEROPORTO',hint: 'Lugar onde aviões decolam e pousam' },
-      { word: 'CINEMA',   hint: 'Lugar onde assistimos a filmes' },
-      { word: 'CARRO',    hint: 'Veículo motorizado de quatro rodas' }
+      { word: 'JAVASCRIPT', hint: 'Linguagem de programação para web' },
+      { word: 'HTML',       hint: 'Linguagem de marcação de páginas' },
+      { word: 'CSS',        hint: 'Linguagem de estilo para páginas' },
+      { word: 'PROGRAMACAO',hint: 'Ato de escrever código para resolver problemas' },
+      { word: 'DESAFIO',    hint: 'Algo que testa suas habilidades' }
     ];
 
     let chosenWord, chosenHint, guessedLetters, wrongAttempts;
@@ -200,3 +230,39 @@
     function endGame() {
       document.querySelectorAll('#letters button')
         .forEach(b => b.disabled = true);
+      restartBtn.style.display = 'inline-block';
+    }
+
+    restartBtn.addEventListener('click', init);
+
+    // Adiciona nova palavra+hint ao array
+    document.getElementById('addWordBtn').addEventListener('click', () => {
+      const wInput = document.getElementById('newWord');
+      const hInput = document.getElementById('newHint');
+      const status = document.getElementById('addStatus');
+      const w = wInput.value.trim().toUpperCase();
+      const h = hInput.value.trim();
+
+      if (!/^[A-Z]+$/.test(w)) {
+        status.textContent = 'Palavra inválida! Use apenas letras A–Z.';
+        status.style.color = 'red';
+        return;
+      }
+      if (!h) {
+        status.textContent = 'Digite uma dica.';
+        status.style.color = 'red';
+        return;
+      }
+
+      words.push({ word: w, hint: h });
+      wInput.value = '';
+      hInput.value = '';
+      status.textContent = 'Nova pergunta adicionada!';
+      status.style.color = 'green';
+    });
+
+    // Começa o jogo ao carregar
+    init();
+  </script>
+</body>
+</html>
