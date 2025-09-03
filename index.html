@@ -111,7 +111,12 @@
       { word: 'HTML',       hint: 'Linguagem de marcação de páginas' },
       { word: 'CSS',        hint: 'Linguagem de estilo para páginas' },
       { word: 'PROGRAMACAO',hint: 'Ato de escrever código para resolver problemas' },
-      { word: 'DESAFIO',    hint: 'Algo que testa suas habilidades' }
+      { word: 'DESAFIO',    hint: 'Algo que testa suas habilidades' },
+      { word: 'ELEFANTE',   hint: 'Grande mamífero com tromba' },
+      { word: 'PYTHON',     hint: 'Linguagem de programação conhecida por sua simplicidade' },
+      { word: 'CACHORRO',   hint: 'Animal de estimação muito comum' },
+      { word: 'LIVRO',      hint: 'Objeto usado para ler e aprender' },
+      { word: 'SOL',        hint: 'Estrela que ilumina o nosso sistema solar' }
     ];
 
     let chosenWord, chosenHint, guessedLetters, wrongAttempts;
@@ -121,6 +126,7 @@
 
     // Inicializa ou reinicia o jogo
     function init() {
+      // Escolhe uma palavra aleatória da lista
       const idx = Math.floor(Math.random() * words.length);
       chosenWord     = words[idx].word;
       chosenHint     = words[idx].hint;
@@ -233,36 +239,4 @@
       restartBtn.style.display = 'inline-block';
     }
 
-    restartBtn.addEventListener('click', init);
-
-    // Adiciona nova palavra+hint ao array
-    document.getElementById('addWordBtn').addEventListener('click', () => {
-      const wInput = document.getElementById('newWord');
-      const hInput = document.getElementById('newHint');
-      const status = document.getElementById('addStatus');
-      const w = wInput.value.trim().toUpperCase();
-      const h = hInput.value.trim();
-
-      if (!/^[A-Z]+$/.test(w)) {
-        status.textContent = 'Palavra inválida! Use apenas letras A–Z.';
-        status.style.color = 'red';
-        return;
-      }
-      if (!h) {
-        status.textContent = 'Digite uma dica.';
-        status.style.color = 'red';
-        return;
-      }
-
-      words.push({ word: w, hint: h });
-      wInput.value = '';
-      hInput.value = '';
-      status.textContent = 'Nova pergunta adicionada!';
-      status.style.color = 'green';
-    });
-
-    // Começa o jogo ao carregar
-    init();
-  </script>
-</body>
-</html>
+    restart
