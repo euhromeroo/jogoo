@@ -105,14 +105,14 @@
   <button id="restartBtn">Jogar Novamente</button>
 
   <script>
-    // Lista inicial de palavras com dicas
-    let words = [
-      { word: 'JAVASCRIPT', hint: 'Linguagem de programação para web' },
-      { word: 'HTML',       hint: 'Linguagem de marcação de páginas' },
-      { word: 'CSS',        hint: 'Linguagem de estilo para páginas' },
-      { word: 'PROGRAMACAO',hint: 'Ato de escrever código para resolver problemas' },
-      { word: 'DESAFIO',    hint: 'Algo que testa suas habilidades' }
-    ];
+    // Lista inicial de palavras com dicas aleatórias
+let words = [
+  { word: 'PAPAGAIO', hint: 'Ave colorida que gosta de imitar sons' },
+  { word: 'MELANCIA', hint: 'Fruta doce e refrescante, geralmente vermelha' },
+  { word: 'CINEMA', hint: 'Lugar onde assistimos filmes' },
+  { word: 'NAVE', hint: 'Veículo utilizado para viajar pelo espaço' },
+  { word: 'SABONETE', hint: 'Produto utilizado para higiene pessoal' }
+];
 
     let chosenWord, chosenHint, guessedLetters, wrongAttempts;
     const canvas     = document.getElementById('hangmanCanvas');
