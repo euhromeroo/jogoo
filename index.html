@@ -8,7 +8,10 @@
       font-family: Arial, sans-serif;
       text-align: center;
       margin: 2rem;
-      background-color: #f0f0f0;
+      background-color: #f5f5dc; /* bege */
+      border: 5px solid orange;  /* margem laranja */
+      padding: 1rem;
+      box-sizing: border-box;
     }
 
     #addWordSection {
@@ -106,13 +109,13 @@
 
   <script>
     // Lista inicial de palavras com dicas aleatórias
-let words = [
-  { word: 'PAPAGAIO', hint: 'Ave colorida que gosta de imitar sons' },
-  { word: 'MELANCIA', hint: 'Fruta doce e refrescante, geralmente vermelha' },
-  { word: 'CINEMA', hint: 'Lugar onde assistimos filmes' },
-  { word: 'NAVE', hint: 'Veículo utilizado para viajar pelo espaço' },
-  { word: 'SABONETE', hint: 'Produto utilizado para higiene pessoal' }
-];
+    let words = [
+      { word: 'PAPAGAIO', hint: 'Ave colorida que gosta de imitar sons' },
+      { word: 'MELANCIA', hint: 'Fruta doce e refrescante, geralmente vermelha' },
+      { word: 'CINEMA', hint: 'Lugar onde assistimos filmes' },
+      { word: 'NAVE', hint: 'Veículo utilizado para viajar pelo espaço' },
+      { word: 'SABONETE', hint: 'Produto utilizado para higiene pessoal' }
+    ];
 
     let chosenWord, chosenHint, guessedLetters, wrongAttempts;
     const canvas     = document.getElementById('hangmanCanvas');
@@ -145,7 +148,7 @@ let words = [
       ctx.beginPath(); ctx.moveTo(10,240);  ctx.lineTo(190,240); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(50,240);  ctx.lineTo(50,20);   ctx.stroke();
       ctx.beginPath(); ctx.moveTo(50,20);   ctx.lineTo(140,20);  ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(140,20);  ctx.lineTo(140,50);  ctx.stroke();
+      ctx.beginPath(); ctx.lineTo(140,20);  ctx.lineTo(140,50);  ctx.stroke();
 
       // Partes do boneco
       if (wrongAttempts >= 1) {

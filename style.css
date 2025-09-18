@@ -1,0 +1,9 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 2rem;
+  background-color: #f5f5dc; /* bege */
+  border: 5px solid orange;  /* margem laranja */
+  padding: 1rem;             /* para o conteúdo não grudar na borda */
+  box-sizing: border-box;    /* para incluir borda no tamanho total */
+}
