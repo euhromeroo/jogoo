@@ -8,10 +8,13 @@
       font-family: Arial, sans-serif;
       text-align: center;
       margin: 2rem;
-      background-color: #f5f5dc; /* bege */
-      border: 5px solid orange;  /* margem laranja */
+      background-color: #f5f5dc;
+      border: 5px solid orange;
       padding: 1rem;
-      box-sizing: border-box;
+    }
+
+    h1 {
+      color: #444;
     }
 
     #addWordSection {
@@ -23,22 +26,32 @@
       text-align: left;
     }
 
+    #addWordSection label {
+      display: block;
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+
     #addWordSection input {
+      width: 100%;
       padding: 0.4rem;
-      margin-right: 0.5rem;
-      margin-bottom: 0.5rem;
       font-size: 1rem;
+      margin-bottom: 0.5rem;
     }
 
     #addWordSection button {
-      padding: 0.4rem 0.8rem;
+      padding: 0.5rem 1rem;
       font-size: 1rem;
       cursor: pointer;
+      background-color: orange;
+      border: none;
+      color: white;
+      border-radius: 4px;
     }
 
     #addStatus {
       margin-top: 0.5rem;
-      color: green;
+      font-weight: bold;
     }
 
     #hint {
@@ -63,6 +76,18 @@
       margin: 0.2rem;
       font-size: 1rem;
       cursor: pointer;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+      background-color: #f0f0f0;
+      transition: background 0.3s;
+    }
+
+    #letters button.correct {
+      background-color: lightgreen;
+    }
+
+    #letters button.wrong {
+      background-color: lightcoral;
     }
 
     #hangmanCanvas {
@@ -73,7 +98,8 @@
     }
 
     #status {
-      font-size: 1.2rem;
+      font-size: 1.4rem;
+      font-weight: bold;
       margin-top: 1rem;
     }
 
@@ -81,6 +107,10 @@
       margin-top: 1rem;
       padding: 0.5rem 1rem;
       font-size: 1rem;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
       display: none;
     }
@@ -92,24 +122,25 @@
 
   <div id="addWordSection">
     <h2>Adicionar Nova Pergunta</h2>
-    <input type="text" id="newWord" placeholder="Palavra (A–Z apenas)" maxlength="20">
-    <input type="text" id="newHint" placeholder="Dica para a palavra">
+    <label for="newWord">Palavra (somente letras A–Z):</label>
+    <input type="text" id="newWord" maxlength="20" placeholder="Ex: COMPUTADOR">
+    
+    <label for="newHint">Dica para a palavra:</label>
+    <input type="text" id="newHint" placeholder="Ex: Máquina de processamento">
+
     <button id="addWordBtn">Adicionar Palavra</button>
     <div id="addStatus"></div>
   </div>
 
   <div id="hint"></div>
   <canvas id="hangmanCanvas" width="200" height="250"></canvas>
-
   <div id="wordDisplay"></div>
   <div id="letters"></div>
-
   <div id="status"></div>
   <button id="restartBtn">Jogar Novamente</button>
 
   <script>
-    // Lista inicial de palavras com dicas aleatórias
-    let words = [
+    const words = [
       { word: 'PAPAGAIO', hint: 'Ave colorida que gosta de imitar sons' },
       { word: 'MELANCIA', hint: 'Fruta doce e refrescante, geralmente vermelha' },
       { word: 'CINEMA', hint: 'Lugar onde assistimos filmes' },
@@ -118,20 +149,19 @@
     ];
 
     let chosenWord, chosenHint, guessedLetters, wrongAttempts;
-    const canvas     = document.getElementById('hangmanCanvas');
-    const ctx        = canvas.getContext('2d');
+    const canvas = document.getElementById('hangmanCanvas');
+    const ctx = canvas.getContext('2d');
     const restartBtn = document.getElementById('restartBtn');
 
-    // Inicializa ou reinicia o jogo
     function init() {
-      const idx = Math.floor(Math.random() * words.length);
-      chosenWord     = words[idx].word;
-      chosenHint     = words[idx].hint;
+      const random = words[Math.floor(Math.random() * words.length)];
+      chosenWord = random.word;
+      chosenHint = random.hint;
       guessedLetters = [];
-      wrongAttempts  = 0;
+      wrongAttempts = 0;
 
+      document.getElementById('hint').textContent = `Dica: ${chosenHint}`;
       document.getElementById('status').textContent = '';
-      document.getElementById('hint').textContent   = 'Dica: ' + chosenHint;
       restartBtn.style.display = 'none';
 
       drawGallows();
@@ -139,132 +169,107 @@
       renderLetters();
     }
 
-    // Desenha a forca e o boneco conforme número de erros
     function drawGallows() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.lineWidth = 2;
 
-      // Estrutura fixa da forca
-      ctx.beginPath(); ctx.moveTo(10,240);  ctx.lineTo(190,240); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(50,240);  ctx.lineTo(50,20);   ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(50,20);   ctx.lineTo(140,20);  ctx.stroke();
-      ctx.beginPath(); ctx.lineTo(140,20);  ctx.lineTo(140,50);  ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(10, 240); ctx.lineTo(190, 240); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(50, 240); ctx.lineTo(50, 20); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(50, 20); ctx.lineTo(140, 20); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(140, 20); ctx.lineTo(140, 50); ctx.stroke();
 
-      // Partes do boneco
-      if (wrongAttempts >= 1) {
-        ctx.beginPath(); ctx.arc(140,75,25,0,Math.PI*2); ctx.stroke(); // cabeça
-      }
-      if (wrongAttempts >= 2) {
-        ctx.beginPath(); ctx.moveTo(140,100); ctx.lineTo(140,160); ctx.stroke(); // tronco
-      }
-      if (wrongAttempts >= 3) {
-        ctx.beginPath(); ctx.moveTo(140,120); ctx.lineTo(110,150); ctx.stroke(); // braço E
-      }
-      if (wrongAttempts >= 4) {
-        ctx.beginPath(); ctx.moveTo(140,120); ctx.lineTo(170,150); ctx.stroke(); // braço D
-      }
-      if (wrongAttempts >= 5) {
-        ctx.beginPath(); ctx.moveTo(140,160); ctx.lineTo(110,200); ctx.stroke(); // perna E
-      }
-      if (wrongAttempts >= 6) {
-        ctx.beginPath(); ctx.moveTo(140,160); ctx.lineTo(170,200); ctx.stroke(); // perna D
-      }
+      if (wrongAttempts > 0) ctx.beginPath(), ctx.arc(140, 75, 25, 0, Math.PI * 2), ctx.stroke();
+      if (wrongAttempts > 1) ctx.beginPath(), ctx.moveTo(140, 100), ctx.lineTo(140, 160), ctx.stroke();
+      if (wrongAttempts > 2) ctx.beginPath(), ctx.moveTo(140, 120), ctx.lineTo(110, 150), ctx.stroke();
+      if (wrongAttempts > 3) ctx.beginPath(), ctx.moveTo(140, 120), ctx.lineTo(170, 150), ctx.stroke();
+      if (wrongAttempts > 4) ctx.beginPath(), ctx.moveTo(140, 160), ctx.lineTo(110, 200), ctx.stroke();
+      if (wrongAttempts > 5) ctx.beginPath(), ctx.moveTo(140, 160), ctx.lineTo(170, 200), ctx.stroke();
     }
 
-    // Exibe palavra com '_' e letras corretas
     function renderWord() {
-      const display = chosenWord
-        .split('')
-        .map(l => guessedLetters.includes(l) ? l : '_')
+      const display = chosenWord.split('')
+        .map(letter => guessedLetters.includes(letter) ? letter : '_')
         .join(' ');
       document.getElementById('wordDisplay').textContent = display;
     }
 
-    // Gera botões A–Z
     function renderLetters() {
       const container = document.getElementById('letters');
       container.innerHTML = '';
 
       for (let i = 65; i <= 90; i++) {
         const letter = String.fromCharCode(i);
-        const btn    = document.createElement('button');
-
+        const btn = document.createElement('button');
         btn.textContent = letter;
-        btn.disabled   = guessedLetters.includes(letter) || wrongAttempts >= 6;
-        btn.addEventListener('click', () => handleGuess(letter, btn));
+        btn.setAttribute('aria-label', 'Letra ' + letter);
+        btn.disabled = guessedLetters.includes(letter) || wrongAttempts >= 6;
+
+        btn.addEventListener('click', () => {
+          guessedLetters.push(letter);
+          if (chosenWord.includes(letter)) {
+            btn.classList.add('correct');
+          } else {
+            btn.classList.add('wrong');
+            wrongAttempts++;
+          }
+          updateGame();
+        });
 
         container.appendChild(btn);
       }
     }
 
-    // Trata palpites
-    function handleGuess(letter, btn) {
-      btn.disabled = true;
-      if (chosenWord.includes(letter)) {
-        guessedLetters.push(letter);
-      } else {
-        wrongAttempts++;
-      }
-      updateGame();
-    }
-
-    // Atualiza canvas, palavra e verifica fim
     function updateGame() {
       drawGallows();
       renderWord();
       renderLetters();
-      checkEnd();
+      checkEndGame();
     }
 
-    // Verifica vitória ou derrota
-    function checkEnd() {
-      const won = chosenWord.split('').every(l => guessedLetters.includes(l));
-      if (won) {
-        document.getElementById('status').textContent = 'Você venceu! 🎉';
+    function checkEndGame() {
+      const wordCompleted = chosenWord.split('').every(l => guessedLetters.includes(l));
+      if (wordCompleted) {
+        document.getElementById('status').textContent = '🎉 Você venceu!';
         endGame();
       } else if (wrongAttempts >= 6) {
-        document.getElementById('status').textContent =
-          'Você perdeu. A palavra era: ' + chosenWord;
+        document.getElementById('status').textContent = `💀 Você perdeu! A palavra era: ${chosenWord}`;
         endGame();
       }
     }
 
-    // Bloqueia botões e mostra reinício
     function endGame() {
-      document.querySelectorAll('#letters button')
-        .forEach(b => b.disabled = true);
+      document.querySelectorAll('#letters button').forEach(btn => btn.disabled = true);
       restartBtn.style.display = 'inline-block';
     }
 
     restartBtn.addEventListener('click', init);
 
-    // Adiciona nova palavra+hint ao array
     document.getElementById('addWordBtn').addEventListener('click', () => {
       const wInput = document.getElementById('newWord');
       const hInput = document.getElementById('newHint');
       const status = document.getElementById('addStatus');
-      const w = wInput.value.trim().toUpperCase();
-      const h = hInput.value.trim();
+      const newWord = wInput.value.trim().toUpperCase();
+      const newHint = hInput.value.trim();
 
-      if (!/^[A-Z]+$/.test(w)) {
-        status.textContent = 'Palavra inválida! Use apenas letras A–Z.';
-        status.style.color = 'red';
-        return;
-      }
-      if (!h) {
-        status.textContent = 'Digite uma dica.';
+      if (!/^[A-Z]{2,20}$/.test(newWord)) {
+        status.textContent = 'Palavra inválida! Use apenas letras (2 a 20 caracteres).';
         status.style.color = 'red';
         return;
       }
 
-      words.push({ word: w, hint: h });
+      if (!newHint) {
+        status.textContent = 'Por favor, insira uma dica.';
+        status.style.color = 'red';
+        return;
+      }
+
+      words.push({ word: newWord, hint: newHint });
       wInput.value = '';
       hInput.value = '';
-      status.textContent = 'Nova pergunta adicionada!';
+      status.textContent = '✅ Nova palavra adicionada!';
       status.style.color = 'green';
     });
 
-    // Começa o jogo ao carregar
     init();
   </script>
 </body>
