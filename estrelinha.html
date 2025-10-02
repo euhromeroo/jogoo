@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Snake de Estrelas ⭐</title>
+  <title>Little Stars ⭐</title>
   <style>
     body {
       background-color: #111;
@@ -57,10 +57,10 @@
   </style>
 </head>
 <body>
-  <h1>🌟 Jogo da Cobrinha de Estrelas</h1>
+  <h1>🌟 Jogo da Cobrinha de Estrelas com Bombas 💣</h1>
   <canvas id="gameCanvas" width="600" height="600"></canvas>
   <div id="score">Pontuação: 0</div>
-  <div id="gameOver">💥 Fim de jogo!</div>
+  <div id="gameOver">💥Fim de jogo!</div>
   <div id="controls">
     <button id="startBtn">Iniciar Jogo</button>
     <button id="restartBtn" style="display: none;">Recomeçar</button>
@@ -76,6 +76,8 @@
     let snake = [];
     let direction = { x: 0, y: 0 };
     let food = {};
+    let bombs = [];
+    const bombCount = 5; // quantidade de bombas
     let score = 0;
     let gameRunning = false;
     let gameLoopInterval;
@@ -88,8 +90,20 @@
       ctx.fillText("⭐", x * gridSize + gridSize / 2, y * gridSize + gridSize / 2);
     }
 
+    function drawBomb(x, y, size = 20) {
+      ctx.font = `${size}px Arial`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillStyle = "#ff4444";
+      ctx.fillText("💣", x * gridSize + gridSize / 2, y * gridSize + gridSize / 2);
+    }
+
     function drawFood() {
       drawStar(food.x, food.y);
+    }
+
+    function drawBombs() {
+      bombs.forEach(bomb => drawBomb(bomb.x, bomb.y));
     }
 
     function drawSnake() {
@@ -100,18 +114,18 @@
 
     function update() {
       const head = {
-        x: snake[0].x + direction.x,
-        y: snake[0].y + direction.y
+        x: (snake[0].x + direction.x + tileCount) % tileCount,
+        y: (snake[0].y + direction.y + tileCount) % tileCount
       };
 
-      // Colisão com paredes
-      if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+      // Colisão com si mesmo
+      if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
         endGame();
         return;
       }
 
-      // Colisão com si mesmo
-      if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+      // Colisão com bomba
+      if (bombs.some(bomb => bomb.x === head.x && bomb.y === head.y)) {
         endGame();
         return;
       }
@@ -122,6 +136,7 @@
         score++;
         document.getElementById("score").textContent = "Pontuação: " + score;
         placeFood();
+        placeBombs(); // Atualiza bombas ao comer comida para manter desafio
       } else {
         snake.pop();
       }
@@ -134,7 +149,24 @@
           x: Math.floor(Math.random() * tileCount),
           y: Math.floor(Math.random() * tileCount)
         };
-        validPosition = !snake.some(segment => segment.x === food.x && segment.y === food.y);
+        validPosition = !snake.some(segment => segment.x === food.x && segment.y === food.y) &&
+                        !bombs.some(bomb => bomb.x === food.x && bomb.y === food.y);
+      }
+    }
+
+    function placeBombs() {
+      bombs = [];
+      while (bombs.length < bombCount) {
+        const bombPos = {
+          x: Math.floor(Math.random() * tileCount),
+          y: Math.floor(Math.random() * tileCount)
+        };
+        // Evita bomb nas mesmas posições da cobrinha ou da comida ou outras bombas
+        if (!snake.some(s => s.x === bombPos.x && s.y === bombPos.y) &&
+            !(bombPos.x === food.x && bombPos.y === food.y) &&
+            !bombs.some(b => b.x === bombPos.x && b.y === bombPos.y)) {
+          bombs.push(bombPos);
+        }
       }
     }
 
@@ -142,6 +174,7 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       drawSnake();
       drawFood();
+      drawBombs();
     }
 
     function gameLoop() {
@@ -159,6 +192,7 @@
       document.getElementById("gameOver").style.display = "none";
       document.getElementById("restartBtn").style.display = "none";
       placeFood();
+      placeBombs();
       clearInterval(gameLoopInterval);
       gameLoopInterval = setInterval(gameLoop, 150);
     }
