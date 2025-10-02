@@ -107,10 +107,25 @@
     const ctx = canvas.getContext('2d');
     const nextBtn = document.getElementById('nextBtn');
 
+    // Array que vai guardar os índices das palavras disponíveis
+    let availableIndices = [];
+
+    function resetAvailableIndices() {
+      availableIndices = words.map((_, index) => index);
+    }
+
     function init() {
-      const random = words[Math.floor(Math.random() * words.length)];
-      chosenWord = random.word;
-      chosenHint = random.hint;
+      // Se não tiver mais palavras disponíveis, resetar para jogar tudo de novo
+      if (availableIndices.length === 0) {
+        resetAvailableIndices();
+      }
+
+      // Escolhe índice aleatório da lista disponível e remove para não repetir
+      const randomIdxInAvailable = Math.floor(Math.random() * availableIndices.length);
+      const chosenIndex = availableIndices.splice(randomIdxInAvailable, 1)[0];
+
+      chosenWord = words[chosenIndex].word;
+      chosenHint = words[chosenIndex].hint;
       guessedLetters = [];
       wrongAttempts = 0;
 
@@ -198,6 +213,8 @@
 
     nextBtn.addEventListener('click', init);
 
+    // Inicia o jogo com lista de palavras disponíveis preenchida
+    resetAvailableIndices();
     init();
   </script>
 
