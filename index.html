@@ -11,12 +11,10 @@
       background-color: #f5f5dc;
       border: 5px solid orange;
       padding: 1rem;
-      user-select: none;
     }
 
     h1 {
       color: #444;
-      margin-bottom: 1rem;
     }
 
     #addWordSection {
@@ -26,9 +24,6 @@
       border: 1px solid #ccc;
       display: inline-block;
       text-align: left;
-      max-width: 400px;
-      width: 90vw;
-      border-radius: 8px;
     }
 
     #addWordSection label {
@@ -42,9 +37,6 @@
       padding: 0.4rem;
       font-size: 1rem;
       margin-bottom: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
     }
 
     #addWordSection button {
@@ -55,73 +47,47 @@
       border: none;
       color: white;
       border-radius: 4px;
-      transition: background-color 0.3s ease;
-    }
-    #addWordSection button:hover {
-      background-color: #cc8400;
     }
 
     #addStatus {
       margin-top: 0.5rem;
       font-weight: bold;
-      min-height: 1.2em;
-      transition: opacity 1.2s ease;
     }
 
     #hint {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       margin-bottom: 1rem;
       color: #333;
-      font-weight: 600;
     }
 
     #wordDisplay {
-      font-size: 2.2rem;
-      letter-spacing: 0.6rem;
+      font-size: 2rem;
+      letter-spacing: 0.5rem;
       margin-bottom: 1.5rem;
-      font-family: "Courier New", Courier, monospace;
-      user-select: none;
     }
 
     #letters {
       margin-bottom: 1.5rem;
-      max-width: 360px;
-      margin-left: auto;
-      margin-right: auto;
-      user-select: none;
     }
 
     #letters button {
-      width: 2.8rem;
-      height: 2.8rem;
+      width: 2rem;
+      height: 2rem;
       margin: 0.2rem;
-      font-size: 1.1rem;
+      font-size: 1rem;
       cursor: pointer;
-      border-radius: 4px;
+      border-radius: 3px;
       border: 1px solid #ccc;
       background-color: #f0f0f0;
-      transition: background 0.3s, color 0.3s;
-      font-weight: bold;
-      user-select: none;
+      transition: background 0.3s;
     }
 
     #letters button.correct {
-      background-color: #90ee90;
-      border-color: #32cd32;
-      color: #004d00;
-      cursor: default;
+      background-color: lightgreen;
     }
 
     #letters button.wrong {
-      background-color: #f08080;
-      border-color: #cc3333;
-      color: #660000;
-      cursor: default;
-    }
-
-    #letters button:disabled {
-      cursor: default;
-      opacity: 0.6;
+      background-color: lightcoral;
     }
 
     #hangmanCanvas {
@@ -129,43 +95,24 @@
       border: 1px solid #ccc;
       margin: 1rem auto;
       display: block;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
     }
 
     #status {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: bold;
       margin-top: 1rem;
-      min-height: 2rem;
-      color: #222;
-      user-select: none;
-    }
-
-    #status.win {
-      color: #4caf50;
-    }
-
-    #status.lose {
-      color: #e53935;
     }
 
     #restartBtn {
       margin-top: 1rem;
-      padding: 0.6rem 1.2rem;
-      font-size: 1.1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
       background-color: #4caf50;
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 4px;
       cursor: pointer;
       display: none;
-      transition: background-color 0.3s ease;
-      user-select: none;
-    }
-
-    #restartBtn:hover {
-      background-color: #388e3c;
     }
   </style>
 </head>
@@ -173,23 +120,24 @@
 
   <h1>Jogo da Forca com Dicas</h1>
 
-  <section id="addWordSection" aria-label="Adicionar nova palavra e dica">
+  <div id="addWordSection">
     <h2>Adicionar Nova Pergunta</h2>
     <label for="newWord">Palavra (somente letras A–Z):</label>
-    <input type="text" id="newWord" maxlength="20" placeholder="Ex: COMPUTADOR" aria-describedby="wordHelp" autocomplete="off" autocapitalize="characters" spellcheck="false" />
+    <input type="text" id="newWord" maxlength="20" placeholder="Ex: COMPUTADOR">
     
     <label for="newHint">Dica para a palavra:</label>
-    <input type="text" id="newHint" placeholder="Ex: Máquina de processamento" autocomplete="off" />
-    <button id="addWordBtn" aria-live="polite">Adicionar Palavra</button>
-    <div id="addStatus" role="alert" aria-live="assertive"></div>
-  </section>
+    <input type="text" id="newHint" placeholder="Ex: Máquina de processamento">
 
-  <div id="hint" aria-live="polite"></div>
-  <canvas id="hangmanCanvas" width="200" height="250" aria-label="Forca do jogo"></canvas>
-  <div id="wordDisplay" aria-live="polite" aria-atomic="true" aria-relevant="additions"></div>
-  <div id="letters" role="group" aria-label="Letras disponíveis para escolher"></div>
-  <div id="status" aria-live="polite"></div>
-  <button id="restartBtn" aria-label="Jogar novamente">Jogar Novamente</button>
+    <button id="addWordBtn">Adicionar Palavra</button>
+    <div id="addStatus"></div>
+  </div>
+
+  <div id="hint"></div>
+  <canvas id="hangmanCanvas" width="200" height="250"></canvas>
+  <div id="wordDisplay"></div>
+  <div id="letters"></div>
+  <div id="status"></div>
+  <button id="restartBtn">Jogar Novamente</button>
 
   <script>
     const words = [
@@ -204,8 +152,6 @@
     const canvas = document.getElementById('hangmanCanvas');
     const ctx = canvas.getContext('2d');
     const restartBtn = document.getElementById('restartBtn');
-    const addStatus = document.getElementById('addStatus');
-    const lettersContainer = document.getElementById('letters');
 
     function init() {
       const random = words[Math.floor(Math.random() * words.length)];
@@ -217,44 +163,39 @@
       document.getElementById('hint').textContent = `Dica: ${chosenHint}`;
       document.getElementById('status').textContent = '';
       restartBtn.style.display = 'none';
-      addStatus.style.opacity = 0;
 
       drawGallows();
       renderWord();
       renderLetters();
-
-      // Foca no grupo de letras para acessibilidade
-      lettersContainer.focus();
     }
 
     function drawGallows() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.lineWidth = 2;
-      ctx.strokeStyle = '#222';
 
       ctx.beginPath(); ctx.moveTo(10, 240); ctx.lineTo(190, 240); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(50, 240); ctx.lineTo(50, 20); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(50, 20); ctx.lineTo(140, 20); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(140, 20); ctx.lineTo(140, 50); ctx.stroke();
 
-      if (wrongAttempts > 0) { ctx.beginPath(); ctx.arc(140, 75, 25, 0, Math.PI * 2); ctx.stroke(); }
-      if (wrongAttempts > 1) { ctx.beginPath(); ctx.moveTo(140, 100); ctx.lineTo(140, 160); ctx.stroke(); }
-      if (wrongAttempts > 2) { ctx.beginPath(); ctx.moveTo(140, 120); ctx.lineTo(110, 150); ctx.stroke(); }
-      if (wrongAttempts > 3) { ctx.beginPath(); ctx.moveTo(140, 120); ctx.lineTo(170, 150); ctx.stroke(); }
-      if (wrongAttempts > 4) { ctx.beginPath(); ctx.moveTo(140, 160); ctx.lineTo(110, 200); ctx.stroke(); }
-      if (wrongAttempts > 5) { ctx.beginPath(); ctx.moveTo(140, 160); ctx.lineTo(170, 200); ctx.stroke(); }
+      if (wrongAttempts > 0) ctx.beginPath(), ctx.arc(140, 75, 25, 0, Math.PI * 2), ctx.stroke();
+      if (wrongAttempts > 1) ctx.beginPath(), ctx.moveTo(140, 100), ctx.lineTo(140, 160), ctx.stroke();
+      if (wrongAttempts > 2) ctx.beginPath(), ctx.moveTo(140, 120), ctx.lineTo(110, 150), ctx.stroke();
+      if (wrongAttempts > 3) ctx.beginPath(), ctx.moveTo(140, 120), ctx.lineTo(170, 150), ctx.stroke();
+      if (wrongAttempts > 4) ctx.beginPath(), ctx.moveTo(140, 160), ctx.lineTo(110, 200), ctx.stroke();
+      if (wrongAttempts > 5) ctx.beginPath(), ctx.moveTo(140, 160), ctx.lineTo(170, 200), ctx.stroke();
     }
 
     function renderWord() {
       const display = chosenWord.split('')
         .map(letter => guessedLetters.includes(letter) ? letter : '_')
         .join(' ');
-      const wordDisplay = document.getElementById('wordDisplay');
-      wordDisplay.textContent = display;
+      document.getElementById('wordDisplay').textContent = display;
     }
 
     function renderLetters() {
-      lettersContainer.innerHTML = '';
+      const container = document.getElementById('letters');
+      container.innerHTML = '';
 
       for (let i = 65; i <= 90; i++) {
         const letter = String.fromCharCode(i);
@@ -264,22 +205,18 @@
         btn.disabled = guessedLetters.includes(letter) || wrongAttempts >= 6;
 
         btn.addEventListener('click', () => {
-          handleLetter(letter, btn);
+          guessedLetters.push(letter);
+          if (chosenWord.includes(letter)) {
+            btn.classList.add('correct');
+          } else {
+            btn.classList.add('wrong');
+            wrongAttempts++;
+          }
+          updateGame();
         });
 
-        lettersContainer.appendChild(btn);
+        container.appendChild(btn);
       }
-    }
-
-    function handleLetter(letter, button) {
-      guessedLetters.push(letter);
-      if (chosenWord.includes(letter)) {
-        button.classList.add('correct');
-      } else {
-        button.classList.add('wrong');
-        wrongAttempts++;
-      }
-      updateGame();
     }
 
     function updateGame() {
@@ -291,33 +228,54 @@
 
     function checkEndGame() {
       const wordCompleted = chosenWord.split('').every(l => guessedLetters.includes(l));
-      const statusDiv = document.getElementById('status');
-
       if (wordCompleted) {
-        statusDiv.textContent = '🎉 Parabéns! Você venceu!';
-        statusDiv.classList.add('win');
-        statusDiv.classList.remove('lose');
+        document.getElementById('status').textContent = '🎉 Você venceu!';
         endGame();
       } else if (wrongAttempts >= 6) {
-        statusDiv.innerHTML = `💀 Você perdeu! A palavra era: <strong>${chosenWord}</strong>`;
-        statusDiv.classList.add('lose');
-        statusDiv.classList.remove('win');
+        document.getElementById('status').textContent = `💀 Você perdeu! A palavra era: ${chosenWord}`;
         endGame();
-      } else {
-        statusDiv.textContent = '';
-        statusDiv.classList.remove('win', 'lose');
       }
     }
 
     function endGame() {
       document.querySelectorAll('#letters button').forEach(btn => btn.disabled = true);
       restartBtn.style.display = 'inline-block';
-      restartBtn.focus();
     }
 
     restartBtn.addEventListener('click', init);
 
     document.getElementById('addWordBtn').addEventListener('click', () => {
       const wInput = document.getElementById('newWord');
-      const hInput = document.getElementBy
-    })
+      const hInput = document.getElementById('newHint');
+      const status = document.getElementById('addStatus');
+      const newWord = wInput.value.trim().toUpperCase();
+      const newHint = hInput.value.trim();
+
+      if (!/^[A-Z]{2,20}$/.test(newWord)) {
+        status.textContent = 'Palavra inválida! Use apenas letras (2 a 20 caracteres).';
+        status.style.color = 'red';
+        return;
+      }
+
+      if (!newHint) {
+        status.textContent = 'Por favor, insira uma dica.';
+        status.style.color = 'red';
+        return;
+      }
+
+      words.push({ word: newWord, hint: newHint });
+      wInput.value = '';
+      hInput.value = '';
+      status.textContent = '✅ Nova palavra adicionada!';
+      status.style.color = 'green';
+    });
+
+    init();
+  </script>
+
+<a href="estrelinha.html"> Jogo da estrelinha</a>
+<a href="15pernas.js"> Jogo do 15 Pernas</a>
+
+
+</body>
+</html>
