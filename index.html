@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
@@ -17,43 +17,6 @@
       color: #444;
     }
 
-    #addWordSection {
-      margin-bottom: 2rem;
-      padding: 1rem;
-      background: #fff;
-      border: 1px solid #ccc;
-      display: inline-block;
-      text-align: left;
-    }
-
-    #addWordSection label {
-      display: block;
-      font-weight: bold;
-      margin-top: 0.5rem;
-    }
-
-    #addWordSection input {
-      width: 100%;
-      padding: 0.4rem;
-      font-size: 1rem;
-      margin-bottom: 0.5rem;
-    }
-
-    #addWordSection button {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-      cursor: pointer;
-      background-color: orange;
-      border: none;
-      color: white;
-      border-radius: 4px;
-    }
-
-    #addStatus {
-      margin-top: 0.5rem;
-      font-weight: bold;
-    }
-
     #hint {
       font-size: 1.2rem;
       margin-bottom: 1rem;
@@ -68,12 +31,15 @@
 
     #letters {
       margin-bottom: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(7, 2.5rem);
+      justify-content: center;
+      gap: 0.3rem;
     }
 
     #letters button {
-      width: 2rem;
-      height: 2rem;
-      margin: 0.2rem;
+      width: 2.5rem;
+      height: 2.5rem;
       font-size: 1rem;
       cursor: pointer;
       border-radius: 3px;
@@ -103,11 +69,11 @@
       margin-top: 1rem;
     }
 
-    #restartBtn {
+    #nextBtn {
       margin-top: 1rem;
       padding: 0.5rem 1rem;
       font-size: 1rem;
-      background-color: #4caf50;
+      background-color: #2196f3;
       color: white;
       border: none;
       border-radius: 4px;
@@ -120,24 +86,12 @@
 
   <h1>Jogo da Forca com Dicas</h1>
 
-  <div id="addWordSection">
-    <h2>Adicionar Nova Pergunta</h2>
-    <label for="newWord">Palavra (somente letras A–Z):</label>
-    <input type="text" id="newWord" maxlength="20" placeholder="Ex: COMPUTADOR">
-    
-    <label for="newHint">Dica para a palavra:</label>
-    <input type="text" id="newHint" placeholder="Ex: Máquina de processamento">
-
-    <button id="addWordBtn">Adicionar Palavra</button>
-    <div id="addStatus"></div>
-  </div>
-
   <div id="hint"></div>
   <canvas id="hangmanCanvas" width="200" height="250"></canvas>
   <div id="wordDisplay"></div>
   <div id="letters"></div>
   <div id="status"></div>
-  <button id="restartBtn">Jogar Novamente</button>
+  <button id="nextBtn">Próximo</button>
 
   <script>
     const words = [
@@ -151,7 +105,7 @@
     let chosenWord, chosenHint, guessedLetters, wrongAttempts;
     const canvas = document.getElementById('hangmanCanvas');
     const ctx = canvas.getContext('2d');
-    const restartBtn = document.getElementById('restartBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
     function init() {
       const random = words[Math.floor(Math.random() * words.length)];
@@ -162,7 +116,7 @@
 
       document.getElementById('hint').textContent = `Dica: ${chosenHint}`;
       document.getElementById('status').textContent = '';
-      restartBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
 
       drawGallows();
       renderWord();
@@ -239,43 +193,16 @@
 
     function endGame() {
       document.querySelectorAll('#letters button').forEach(btn => btn.disabled = true);
-      restartBtn.style.display = 'inline-block';
+      nextBtn.style.display = 'inline-block';
     }
 
-    restartBtn.addEventListener('click', init);
-
-    document.getElementById('addWordBtn').addEventListener('click', () => {
-      const wInput = document.getElementById('newWord');
-      const hInput = document.getElementById('newHint');
-      const status = document.getElementById('addStatus');
-      const newWord = wInput.value.trim().toUpperCase();
-      const newHint = hInput.value.trim();
-
-      if (!/^[A-Z]{2,20}$/.test(newWord)) {
-        status.textContent = 'Palavra inválida! Use apenas letras (2 a 20 caracteres).';
-        status.style.color = 'red';
-        return;
-      }
-
-      if (!newHint) {
-        status.textContent = 'Por favor, insira uma dica.';
-        status.style.color = 'red';
-        return;
-      }
-
-      words.push({ word: newWord, hint: newHint });
-      wInput.value = '';
-      hInput.value = '';
-      status.textContent = '✅ Nova palavra adicionada!';
-      status.style.color = 'green';
-    });
+    nextBtn.addEventListener('click', init);
 
     init();
   </script>
 
 <a href="estrelinha.html"> Jogo da estrelinha</a>
 <a href="15pernas.js"> Jogo do 15 Pernas</a>
-
 
 </body>
 </html>
