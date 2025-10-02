@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Little Stars ⭐</title>
+  <title>Snake de Estrelas ⭐</title>
   <style>
     body {
       background-color: #111;
@@ -31,17 +31,40 @@
 
     #gameOver {
       color: red;
-      font-size: 1.2rem;
-      margin-top: 10px;
+      font-size: 1.3rem;
+      margin: 10px;
       display: none;
+    }
+
+    #controls {
+      margin: 20px;
+    }
+
+    button {
+      background-color: #ffd700;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      margin: 5px;
+    }
+
+    button:hover {
+      background-color: #e5c100;
     }
   </style>
 </head>
 <body>
-  <h1>🌟 Estrelinhas </h1>
-  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <h1>🌟 Jogo da Cobrinha de Estrelas</h1>
+  <canvas id="gameCanvas" width="600" height="600"></canvas>
   <div id="score">Pontuação: 0</div>
   <div id="gameOver">💥 Fim de jogo!</div>
+  <div id="controls">
+    <button id="startBtn">Iniciar Jogo</button>
+    <button id="restartBtn" style="display: none;">Recomeçar</button>
+  </div>
 
   <script>
     const canvas = document.getElementById("gameCanvas");
@@ -50,11 +73,12 @@
     const gridSize = 20;
     const tileCount = canvas.width / gridSize;
 
-    let snake = [{ x: 10, y: 10 }];
-    let direction = { x: 1, y: 0 }; // Cobra começa se movendo para a direita
+    let snake = [];
+    let direction = { x: 0, y: 0 };
     let food = {};
     let score = 0;
-    let gameRunning = true;
+    let gameRunning = false;
+    let gameLoopInterval;
 
     function drawStar(x, y, size = 20) {
       ctx.font = `${size}px Arial`;
@@ -94,7 +118,6 @@
 
       snake.unshift(head);
 
-      // Comer comida
       if (head.x === food.x && head.y === food.y) {
         score++;
         document.getElementById("score").textContent = "Pontuação: " + score;
@@ -127,22 +150,29 @@
       draw();
     }
 
-    function endGame() {
-      gameRunning = false;
-      document.getElementById("gameOver").style.display = "block";
-    }
-
-    function resetGame() {
+    function startGame() {
       snake = [{ x: 10, y: 10 }];
-      direction = { x: 1, y: 0 };
+      direction = { x: 1, y: 0 }; // Começa indo pra direita
       score = 0;
       gameRunning = true;
       document.getElementById("score").textContent = "Pontuação: 0";
       document.getElementById("gameOver").style.display = "none";
+      document.getElementById("restartBtn").style.display = "none";
       placeFood();
+      clearInterval(gameLoopInterval);
+      gameLoopInterval = setInterval(gameLoop, 150);
+    }
+
+    function endGame() {
+      gameRunning = false;
+      document.getElementById("gameOver").style.display = "block";
+      document.getElementById("restartBtn").style.display = "inline-block";
+      clearInterval(gameLoopInterval);
     }
 
     document.addEventListener("keydown", e => {
+      if (!gameRunning) return;
+
       switch (e.key) {
         case "ArrowUp":
           if (direction.y === 0) direction = { x: 0, y: -1 };
@@ -156,15 +186,16 @@
         case "ArrowRight":
           if (direction.x === 0) direction = { x: 1, y: 0 };
           break;
-        case "r":
-          resetGame();
-          break;
       }
     });
 
-    // Inicialização
-    placeFood();
-    setInterval(gameLoop, 150);
+    document.getElementById("startBtn").addEventListener("click", () => {
+      startGame();
+    });
+
+    document.getElementById("restartBtn").addEventListener("click", () => {
+      startGame();
+    });
   </script>
 </body>
 </html>
