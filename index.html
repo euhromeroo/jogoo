@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Jogo da Forca com Dicas</title>
+  <title>Jogo da Forca</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -84,7 +84,7 @@
 </head>
 <body>
 
-  <h1>Jogo da Forca com Dicas</h1>
+  <h1>Jogo da Forca</h1>
 
   <div id="hint"></div>
   <canvas id="hangmanCanvas" width="200" height="250"></canvas>
@@ -218,8 +218,27 @@
     init();
   </script>
 
+
+<div class="quadro">
+ Outro jogo
+</div>
+
+<style>
+  .quadro {
+    width: 300px;              /* largura do quadro */
+    height: 150px;             /* altura do quadro */
+    border: 2px solid black;   /* borda do quadro */
+    display: flex;             /* usar flexbox para centralizar */
+    justify-content: center;   /* centraliza horizontalmente */
+    align-items: center;       /* centraliza verticalmente */
+    font-size: 1.5rem;         /* tamanho da fonte */
+    font-weight: bold;         /* negrito */
+    background-color: #f0f0f0; /* cor de fundo opcional */
+  }
+</style>
+
 <a href="estrelinha.html"> Jogo da estrelinha</a>
-<a href="15pernas.js"> Jogo do 15 Pernas</a>
+
 
 </body>
 </html>
