@@ -28,12 +28,20 @@
       margin-top: 10px;
       color: #ffd700;
     }
+
+    #gameOver {
+      color: red;
+      font-size: 1.2rem;
+      margin-top: 10px;
+      display: none;
+    }
   </style>
 </head>
 <body>
   <h1>🌟 Jogo da Cobrinha de Estrelas</h1>
   <canvas id="gameCanvas" width="400" height="400"></canvas>
   <div id="score">Pontuação: 0</div>
+  <div id="gameOver">💥 Fim de jogo!</div>
 
   <script>
     const canvas = document.getElementById("gameCanvas");
@@ -43,14 +51,17 @@
     const tileCount = canvas.width / gridSize;
 
     let snake = [{ x: 10, y: 10 }];
-    let direction = { x: 0, y: 0 };
-    let food = { x: 5, y: 5 };
+    let direction = { x: 1, y: 0 }; // Cobra começa se movendo para a direita
+    let food = {};
     let score = 0;
+    let gameRunning = true;
 
     function drawStar(x, y, size = 20) {
       ctx.font = `${size}px Arial`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
       ctx.fillStyle = "#ffd700";
-      ctx.fillText("⭐", x * gridSize, (y + 1) * gridSize - 4);
+      ctx.fillText("⭐", x * gridSize + gridSize / 2, y * gridSize + gridSize / 2);
     }
 
     function drawFood() {
@@ -69,18 +80,15 @@
         y: snake[0].y + direction.y
       };
 
-      // Verifica colisão com paredes
-      if (
-        head.x < 0 || head.x >= tileCount ||
-        head.y < 0 || head.y >= tileCount
-      ) {
-        resetGame();
+      // Colisão com paredes
+      if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+        endGame();
         return;
       }
 
-      // Verifica colisão com si mesmo
+      // Colisão com si mesmo
       if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
-        resetGame();
+        endGame();
         return;
       }
 
@@ -97,14 +105,13 @@
     }
 
     function placeFood() {
-      food = {
-        x: Math.floor(Math.random() * tileCount),
-        y: Math.floor(Math.random() * tileCount)
-      };
-
-      // Evita colocar comida em cima da estrela
-      if (snake.some(segment => segment.x === food.x && segment.y === food.y)) {
-        placeFood();
+      let validPosition = false;
+      while (!validPosition) {
+        food = {
+          x: Math.floor(Math.random() * tileCount),
+          y: Math.floor(Math.random() * tileCount)
+        };
+        validPosition = !snake.some(segment => segment.x === food.x && segment.y === food.y);
       }
     }
 
@@ -115,8 +122,24 @@
     }
 
     function gameLoop() {
+      if (!gameRunning) return;
       update();
       draw();
+    }
+
+    function endGame() {
+      gameRunning = false;
+      document.getElementById("gameOver").style.display = "block";
+    }
+
+    function resetGame() {
+      snake = [{ x: 10, y: 10 }];
+      direction = { x: 1, y: 0 };
+      score = 0;
+      gameRunning = true;
+      document.getElementById("score").textContent = "Pontuação: 0";
+      document.getElementById("gameOver").style.display = "none";
+      placeFood();
     }
 
     document.addEventListener("keydown", e => {
@@ -133,18 +156,13 @@
         case "ArrowRight":
           if (direction.x === 0) direction = { x: 1, y: 0 };
           break;
+        case "r":
+          resetGame();
+          break;
       }
     });
 
-    function resetGame() {
-      alert("💥 Fim de jogo! Pontuação: " + score);
-      snake = [{ x: 10, y: 10 }];
-      direction = { x: 0, y: 0 };
-      score = 0;
-      document.getElementById("score").textContent = "Pontuação: 0";
-      placeFood();
-    }
-
+    // Inicialização
     placeFood();
     setInterval(gameLoop, 150);
   </script>
