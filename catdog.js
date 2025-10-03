@@ -1,6 +1,10 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+// Defina o tamanho do canvas (pode ser no CSS também)
+canvas.width = 800;
+canvas.height = 500;
+
 const keys = {};
 
 document.addEventListener("keydown", e => keys[e.key] = true);
@@ -26,9 +30,13 @@ class Player {
 
   update() {
     // Movimento horizontal
-    if (keys[this.controls.left]) this.vx = -this.speed;
-    else if (keys[this.controls.right]) this.vx = this.speed;
-    else this.vx = 0;
+    if (keys[this.controls.left]) {
+      this.vx = -this.speed;
+    } else if (keys[this.controls.right]) {
+      this.vx = this.speed;
+    } else {
+      this.vx = 0;
+    }
 
     // Pulo
     if (keys[this.controls.jump] && this.onGround) {
@@ -36,28 +44,36 @@ class Player {
       this.onGround = false;
     }
 
+    // Aplicar gravidade
     this.vy += gravity;
 
+    // Atualizar posição
     this.x += this.vx;
     this.y += this.vy;
 
-    // Colisão com chão
+    // Checar colisão com plataformas
     this.onGround = false;
     for (let p of platforms) {
-      if (this.x < p.x + p.width &&
-          this.x + this.width > p.x &&
-          this.y + this.height < p.y + 10 &&
-          this.y + this.height + this.vy >= p.y) {
+      if (
+        this.x < p.x + p.width &&
+        this.x + this.width > p.x &&
+        this.y + this.height <= p.y && // Antes da plataforma
+        this.y + this.height + this.vy >= p.y // Caindo sobre a plataforma
+      ) {
         this.vy = 0;
         this.y = p.y - this.height;
         this.onGround = true;
       }
     }
 
-    // Limitar na tela
+    // Limitar para dentro do canvas (pode adaptar se quiser)
     if (this.y > canvas.height) {
       this.resetPosition();
     }
+
+    // Limitar movimento horizontal dentro do canvas
+    if (this.x < 0) this.x = 0;
+    if (this.x + this.width > canvas.width) this.x = canvas.width - this.width;
   }
 
   resetPosition() {
@@ -94,8 +110,11 @@ class Obstacle {
       player.y < this.y + this.height &&
       player.y + player.height > this.y
     ) {
-      if ((this.type === "fire" && player.type === "dog") ||
-          (this.type === "water" && player.type === "cat")) {
+      // Reseta posição se colidir com obstáculo perigoso
+      if (
+        (this.type === "fire" && player.type === "dog") ||
+        (this.type === "water" && player.type === "cat")
+      ) {
         player.resetPosition();
       }
     }
@@ -123,12 +142,12 @@ const platforms = [
   new Platform(0, 460, 800, 40),
   new Platform(200, 350, 100, 20),
   new Platform(400, 300, 100, 20),
-  new Platform(600, 250, 100, 20)
+  new Platform(600, 250, 100, 20),
 ];
 
 const obstacles = [
   new Obstacle(300, 460, 100, 20, "fire"),
-  new Obstacle(500, 460, 100, 20, "water")
+  new Obstacle(500, 460, 100, 20, "water"),
 ];
 
 function drawGoal() {
@@ -137,8 +156,12 @@ function drawGoal() {
 }
 
 function checkWin() {
-  if (cat.x > 700 && cat.y < 300 &&
-      dog.x > 700 && dog.y < 300) {
+  if (
+    cat.x > 700 &&
+    cat.y < 300 &&
+    dog.x > 700 &&
+    dog.y < 300
+  ) {
     ctx.fillStyle = "#fff";
     ctx.font = "30px Arial";
     ctx.fillText("Vocês venceram!", 300, 200);
@@ -151,17 +174,23 @@ let gameRunning = true;
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Desenhar plataformas
   for (let p of platforms) p.draw();
 
+  // Desenhar obstáculos e checar colisão
   for (let o of obstacles) {
     o.draw();
     o.checkCollision(cat);
     o.checkCollision(dog);
   }
 
+  // Desenhar objetivo
   drawGoal();
+
+  // Checar vitória
   checkWin();
 
+  // Atualizar e desenhar jogadores
   cat.update();
   cat.draw();
 
